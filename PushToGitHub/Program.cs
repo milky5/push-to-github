@@ -12,16 +12,17 @@ namespace PushToGitHub
             {
                 Repository repo = new Repository();
 
-                string path = "https://github.com/milky5/push-to-github.git";
+                string path = Environment.GetEnvironmentVariable("REPO_PATH");
 
                 // \\Mac\Home\Documents\test
+                // C:\Users\UserName\Documents\test
                 string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "test");
 
                 CloneOptions options = new CloneOptions();
                 options.BranchName = "master";
                 options.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials
                 {
-                    Username = "", // access token
+                    Username = Environment.GetEnvironmentVariable("PAT"), // access token
                     Password = string.Empty
                 };
 

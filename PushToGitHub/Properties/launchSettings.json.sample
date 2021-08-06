@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "PushToGitHub": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "REPO_PATH": "dummy.git",
+        "PAT": "dummy"
+      }
+    }
+  }
+}
