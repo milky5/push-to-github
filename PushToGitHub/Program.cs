@@ -10,13 +10,30 @@ namespace PushToGitHub
         {
             try
             {
+                // H:\push-to-github\PushToGitHub\bin\Debug\netcoreapp3.1
+                Console.WriteLine(Directory.GetCurrentDirectory());
+                string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
+                
+                // Clone(folderPath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+
+            Console.WriteLine("success");
+            Console.Read();
+        }
+
+        public static void Clone(string folderPath)
+        {
+            try
+            {
                 Repository repo = new Repository();
 
                 string path = Environment.GetEnvironmentVariable("REPO_PATH");
-
-                // \\Mac\Home\Documents\test
-                // C:\Users\UserName\Documents\test
-                string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "test");
 
                 CloneOptions options = new CloneOptions();
                 options.BranchName = "master";
@@ -33,9 +50,6 @@ namespace PushToGitHub
                 Console.WriteLine($"error: {ex}");
                 throw;
             }
-
-            Console.WriteLine("success");
-            Console.Read();
         }
     }
 }
