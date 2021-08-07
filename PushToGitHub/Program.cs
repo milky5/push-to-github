@@ -22,7 +22,7 @@ namespace PushToGitHub
 
                 AppendFile(targetFilePath, "new data");
 
-                Commit(folderPath, targetFilePath);
+                CommitAndPush(folderPath, targetFileName);
             }
             catch (Exception ex)
             {
@@ -77,57 +77,25 @@ namespace PushToGitHub
             }
         }
 
-        public static void Commit(string folderPath, string filePath)
+        public static void CommitAndPush(string folderPath, string targetFileName)
         {
             try
             {
-                Repository repo = new Repository(folderPath);
-                //repo.Index.Add()
-                Commands.Stage(repo, filePath);
-
-                Signature signature = new Signature("kakeibo-csv", "system@example.com", DateTimeOffset.Now);
-                var commit = repo.Commit("append data", signature, signature);
-                //Console.WriteLine(commit.Author.When.DateTime);
-                //Console.WriteLine(commit.Sha);
-                //Console.WriteLine("----------------------------------");
-
-                PushOptions options = new PushOptions();
-                options.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials
+                using (Repository repo = new Repository(folderPath))
                 {
-                    Username = Environment.GetEnvironmentVariable("PAT"), // access token
-                    Password = string.Empty
-                };
-                //options.OnPushStatusError = (e) => { 
-                //    Console.WriteLine(e);
-                //    Environment.Exit(1);
-                //};
-                //options.OnPushTransferProgress = (a, b, c) => {
-                //    var msg = string.Format("Transfer status: {0} {1} {2}", a, b, c);
-                //    Console.WriteLine(msg);
-                //    return true;
-                //};
-                //options.OnPackBuilderProgress = (a, b, c) =>
-                //{
-                //    var msg = string.Format("Builder status: {0} {1} {2}", a, b, c);
-                //    Console.WriteLine(msg);
-                //    return true;
-                //};
+                    repo.Index.Add(targetFileName);
 
-                //foreach (Commit c in repo.Head.TrackedBranch.Commits)
-                //{
-                //    Console.WriteLine(c.Author.When.DateTime);
-                //    Console.WriteLine(c.Sha);
-                //}
+                    Signature signature = new Signature("kakeibo-csv", "system@example.com", DateTimeOffset.Now);
+                    var commit = repo.Commit("append data", signature, signature);
 
-                //foreach (var item in repo.Branches)
-                //{
-                //    Console.WriteLine(item.FriendlyName);
-                //}
-
-                //Console.WriteLine(repo.Head.FriendlyName);
-
-
-                repo.Network.Push(repo.Head, options);
+                    PushOptions options = new PushOptions();
+                    options.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials
+                    {
+                        Username = Environment.GetEnvironmentVariable("PAT"), // access token
+                        Password = string.Empty
+                    };
+                    repo.Network.Push(repo.Head, options);
+                }
             }
             catch (Exception)
             {
